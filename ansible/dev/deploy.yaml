@@ -1,0 +1,66 @@
+---
+- name: Deploy to EC2 and set up monitoring API
+  hosts: dev
+  become: true  # Run as sudo
+  tasks:
+
+    - name: Install Git
+      yum:
+        name: git
+        state: present
+
+    - name: Install Python3 and pip
+      yum:
+        name: python3
+        state: present
+
+    - name: Install pip3
+      yum:
+        name: python3-pip
+        state: present
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Clone Git Repository for Monitoring API
+      git:
+        repo: "https://github.com/lamissb/DevOps_With_Hamza.git"
+        dest: "/home/ec2-user/DevOps_With_Hamza"
+        version: "dev"
+
+    - name: Install dependencies from requirements.txt
+      pip:
+        requirements: "/home/ec2-user/DevOps_With_Hamza/31_January/requirements.txt"
+    - name: List files in the directory to verify Dockerfile
+      command: ls -l "/home/ec2-user/DevOps_With_Hamza/31_January"
+      register: file_list
+
+    - name: Show file list
+      debug:
+        var: file_list.stdout
+
+    - name: Build Docker image for Monitoring API
+      docker_image:
+        build:
+          path: "/home/ec2-user/DevOps_With_Hamza/31_January"
+          dockerfile: "Dockerfile"
+        name: "monitoring-api-image"
+        tag: "latest"
+        source: build
+    - name: Run Docker container for Monitoring API
+      docker_container:
+        name: "monitoring-api-container"
+        image: "monitoring-api-image:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"  # Adjust according to your API's port
+
