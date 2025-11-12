@@ -54,8 +54,8 @@ AWS Cloud (us-east-1)
 1. **Clone repo**
 
 ```bash
-git clone <repo-url>
-cd <repo-name>
+git clone https://github.com/lamissb/aws-infra-monitoring-api.git
+cd aws-infra-monitoring-api
 ```
 
 2. **Configure AWS**
@@ -135,4 +135,5 @@ terraform destroy
 * [Ansible Docs](https://docs.ansible.com/)
 * [Docker Docs](https://docs.docker.com/)
 * [AWS EC2 Guide](https://docs.aws.amazon.com/ec2/)
+
 
